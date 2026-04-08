@@ -4,6 +4,7 @@ export interface IUser extends Document {
     email: string;
     password: string;
     role: "user" | "admin";
+    college?: string;
     pointBalance: number;
     createdAt: Date;
 }
