@@ -9,6 +9,7 @@ const GiftCard_1 = __importDefault(require("../models/GiftCard"));
 const Redemption_1 = __importDefault(require("../models/Redemption"));
 const User_1 = __importDefault(require("../models/User"));
 const auth_1 = require("../middleware/auth");
+const mailer_1 = require("../services/mailer");
 const router = (0, express_1.Router)();
 router.get("/", auth_1.authenticate, async (req, res) => {
     const userId = req.user?.id;
@@ -16,6 +17,15 @@ router.get("/", auth_1.authenticate, async (req, res) => {
     const redemptions = await Redemption_1.default.find(filter)
         .populate("giftCardId")
         .populate("userId")
+        .sort({ createdAt: -1 });
+    res.json(redemptions);
+});
+router.get("/active", auth_1.authenticate, async (req, res) => {
+    const userId = req.user?.id;
+    if (!userId)
+        return res.status(401).json({ message: "Unauthorized" });
+    const redemptions = await Redemption_1.default.find({ userId, status: "completed" })
+        .populate("giftCardId")
         .sort({ createdAt: -1 });
     res.json(redemptions);
 });
@@ -42,6 +52,21 @@ router.post("/", auth_1.authenticate, async (req, res) => {
         });
         user.pointBalance -= giftCard.pointsCost;
         await user.save();
+        try {
+            const payload = {
+                to: user.email,
+                giftCardName: giftCard.name,
+                provider: giftCard.provider,
+                amount: giftCard.amount,
+                pointsCost: giftCard.pointsCost,
+            };
+            if (user.name)
+                payload.name = user.name;
+            await (0, mailer_1.sendRedemptionEmail)(payload);
+        }
+        catch (mailError) {
+            console.error("Redemption email failed", mailError);
+        }
         res.json({ message: "Redeemed", redemption });
     }
     catch (error) {

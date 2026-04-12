@@ -4,6 +4,7 @@ export interface IActivity extends Document {
     title: string;
     description?: string;
     points: number;
+    isActive: boolean;
     createdAt: Date;
 }
 declare const Activity: import("mongoose").Model<IActivity, {}, {}, {}, Document<unknown, {}, IActivity> & IActivity & {

@@ -13,4 +13,5 @@ declare global {
 export declare function createToken(payload: object): string;
 export declare function authenticate(req: Request, res: Response, next: NextFunction): Response<any, Record<string, any>> | undefined;
 export declare function ensureAdmin(req: Request, res: Response, next: NextFunction): Response<any, Record<string, any>> | undefined;
+export declare function ensureVendorOrAdmin(req: Request, res: Response, next: NextFunction): Response<any, Record<string, any>> | undefined;
 //# sourceMappingURL=auth.d.ts.map

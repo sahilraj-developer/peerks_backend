@@ -36,3 +36,10 @@ export function ensureAdmin(req: Request, res: Response, next: NextFunction) {
   }
   next();
 }
+
+export function ensureVendorOrAdmin(req: Request, res: Response, next: NextFunction) {
+  if (!req.user || (req.user.role !== "vendor" && req.user.role !== "admin")) {
+    return res.status(403).json({ message: "Vendor access required" });
+  }
+  next();
+}

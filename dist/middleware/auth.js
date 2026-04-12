@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createToken = createToken;
 exports.authenticate = authenticate;
 exports.ensureAdmin = ensureAdmin;
+exports.ensureVendorOrAdmin = ensureVendorOrAdmin;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const JWT_SECRET = process.env.JWT_SECRET || "secret_perks_jwt";
 function createToken(payload) {
@@ -29,6 +30,12 @@ function authenticate(req, res, next) {
 function ensureAdmin(req, res, next) {
     if (!req.user || req.user.role !== "admin") {
         return res.status(403).json({ message: "Admin access required" });
+    }
+    next();
+}
+function ensureVendorOrAdmin(req, res, next) {
+    if (!req.user || (req.user.role !== "vendor" && req.user.role !== "admin")) {
+        return res.status(403).json({ message: "Vendor access required" });
     }
     next();
 }
