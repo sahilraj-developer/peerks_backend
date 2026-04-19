@@ -39,7 +39,7 @@ app.get("/api/status", (req, res) => res.json({ status: "ok", time: new Date() }
 mongoose
   .connect(mongoUrl)
   .then(async () => {
-    console.log("Connected to MongoDB", mongoUrl);
+    // console.log("Connected to MongoDB", mongoUrl);
     await seedDatabase();
     app.listen(port, () => {
       console.log(`Perks backend running at http://localhost:${port}`);
