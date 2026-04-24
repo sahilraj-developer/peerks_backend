@@ -13,6 +13,9 @@ import giftCardsRoutes from "./routes/giftcards";
 import balanceRoutes, { handleStripeWebhook } from "./routes/balance";
 import vendorRoutes from "./routes/vendor";
 import collegesRoutes from "./routes/colleges";
+import storesRoutes from "./routes/stores";
+import postsRoutes from "./routes/posts";
+import tasksRoutes from "./routes/tasks";
 import seedDatabase from "./seed";
 
 const app = express();
@@ -32,6 +35,9 @@ app.use("/api/redemptions", redemptionsRoutes);
 app.use("/api/balance", balanceRoutes);
 app.use("/api/vendor", vendorRoutes);
 app.use("/api/colleges", collegesRoutes);
+app.use("/api/stores", storesRoutes);
+app.use("/api/posts", postsRoutes);
+app.use("/api/tasks", tasksRoutes);
 app.use("/api/admin", adminRoutes);
 
 app.get("/api/status", (req, res) => res.json({ status: "ok", time: new Date() }));

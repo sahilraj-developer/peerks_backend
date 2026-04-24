@@ -7,6 +7,7 @@ export interface IGiftCard extends Document {
   amount: number;
   isActive: boolean;
   vendorId?: Schema.Types.ObjectId;
+  storeId?: Schema.Types.ObjectId;
   createdAt: Date;
 }
 
@@ -17,6 +18,7 @@ const giftCardSchema = new Schema<IGiftCard>({
   amount: { type: Number, required: true },
   isActive: { type: Boolean, required: true, default: true },
   vendorId: { type: Schema.Types.ObjectId, ref: "User" },
+  storeId: { type: Schema.Types.ObjectId, ref: "Store" },
   createdAt: { type: Date, default: Date.now },
 });
 

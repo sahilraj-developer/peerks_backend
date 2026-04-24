@@ -7,6 +7,8 @@ import UserActivity from "../models/UserActivity";
 import Activity from "../models/Activity";
 import GiftCard from "../models/GiftCard";
 import BalanceTopup from "../models/BalanceTopup";
+import Store from "../models/Store";
+import Post from "../models/Post";
 import { authenticate, ensureAdmin } from "../middleware/auth";
 
 const router = Router();
@@ -392,6 +394,55 @@ router.delete("/giftcards/:id", authenticate, ensureAdmin, async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete gift card" });
+  }
+});
+
+router.post("/stores", authenticate, ensureAdmin, async (req, res) => {
+  try {
+    const store = await Store.create(req.body);
+    res.json(store);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to create store" });
+  }
+});
+
+router.put("/stores/:id", authenticate, ensureAdmin, async (req, res) => {
+  try {
+    const store = await Store.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(store);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update store" });
+  }
+});
+
+router.delete("/stores/:id", authenticate, ensureAdmin, async (req, res) => {
+  try {
+    await Store.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete store" });
+  }
+});
+
+router.get("/posts", authenticate, ensureAdmin, async (req, res) => {
+  try {
+    const posts = await Post.find().populate("authorId", "name email").sort({ createdAt: -1 });
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get posts" });
+  }
+});
+
+router.put("/posts/:id/status", authenticate, ensureAdmin, async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!["approved", "rejected", "pending"].includes(status)) {
+      return res.status(400).json({ error: "Invalid status" });
+    }
+    const post = await Post.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update post status" });
   }
 });
 
