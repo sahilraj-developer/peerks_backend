@@ -20,7 +20,7 @@ import seedDatabase from "./seed";
 
 const app = express();
 const port = process.env.PORT || 4000;
-const mongoUrl = process.env.MONGODB_URI || "mongodb://localhost:27017/peerks";
+const mongoUrl = process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://localhost:27017/peerks";
 
 app.use(cors());
 
