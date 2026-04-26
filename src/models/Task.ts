@@ -5,6 +5,9 @@ export interface ITask extends Document {
   description: string;
   type: string;
   rewardCoins: number;
+  campus?: string;
+  latitude?: number;
+  longitude?: number;
   isActive: boolean;
   createdAt: Date;
 }
@@ -14,6 +17,9 @@ const taskSchema = new Schema<ITask>({
   description: { type: String, required: true },
   type: { type: String, required: true, default: "post_creation" },
   rewardCoins: { type: Number, required: true, default: 0 },
+  campus: { type: String },
+  latitude: { type: Number },
+  longitude: { type: Number },
   isActive: { type: Boolean, required: true, default: true },
   createdAt: { type: Date, default: Date.now },
 });
