@@ -9,8 +9,8 @@ import GiftCard from "../models/GiftCard";
 import BalanceTopup from "../models/BalanceTopup";
 import Store from "../models/Store";
 import Post from "../models/Post";
-import Task from "../models/Task";
 import { authenticate, ensureAdmin } from "../middleware/auth";
+import * as AdminTaskController from "../controllers/AdminTaskController";
 
 const router = Router();
 
@@ -447,62 +447,9 @@ router.put("/posts/:id/status", authenticate, ensureAdmin, async (req, res) => {
   }
 });
 
-router.get("/tasks", authenticate, ensureAdmin, async (req, res) => {
-  const page = Math.max(1, Number(req.query.page) || 1);
-  const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 20));
-  const q = String(req.query.q || "").trim();
-  const status = String(req.query.status || "all");
-  const sort = String(req.query.sort || "createdAt");
-  const dir = String(req.query.dir || "desc") === "asc" ? 1 : -1;
-
-  const query: any = {};
-  if (q) {
-    query.$or = [
-      { title: { $regex: q, $options: "i" } },
-      { description: { $regex: q, $options: "i" } },
-      { type: { $regex: q, $options: "i" } },
-    ];
-  }
-  if (status === "active") query.isActive = true;
-  if (status === "inactive") query.isActive = false;
-
-  const sortMap: any = { title: "title", type: "type", rewardCoins: "rewardCoins", isActive: "isActive", createdAt: "createdAt" };
-  const sortField = sortMap[sort] || "createdAt";
-
-  const total = await Task.countDocuments(query);
-  const items = await Task.find(query)
-    .sort({ [sortField]: dir })
-    .skip((page - 1) * limit)
-    .limit(limit);
-
-  res.json({ items, total, page, limit });
-});
-
-router.post("/tasks", authenticate, ensureAdmin, async (req, res) => {
-  try {
-    const task = await Task.create(req.body);
-    res.json(task);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to create task" });
-  }
-});
-
-router.put("/tasks/:id", authenticate, ensureAdmin, async (req, res) => {
-  try {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(task);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to update task" });
-  }
-});
-
-router.delete("/tasks/:id", authenticate, ensureAdmin, async (req, res) => {
-  try {
-    await Task.findByIdAndDelete(req.params.id);
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to delete task" });
-  }
-});
+router.get("/tasks", authenticate, ensureAdmin, AdminTaskController.getAllTasks);
+router.post("/tasks", authenticate, ensureAdmin, AdminTaskController.createTask);
+router.put("/tasks/:id", authenticate, ensureAdmin, AdminTaskController.updateTask);
+router.delete("/tasks/:id", authenticate, ensureAdmin, AdminTaskController.deleteTask);
 
 export default router;
