@@ -1,7 +1,6 @@
 import express from "express";
 import Post from "../models/Post";
 import { authenticate } from "../middleware/auth";
-import { AuthRequest } from "../types/express";
 
 const router = express.Router();
 
@@ -16,7 +15,7 @@ router.get("/", async (req, res) => {
 });
 
 // Submit a new post (requires auth)
-router.post("/", authenticate, async (req: AuthRequest, res) => {
+router.post("/", authenticate, async (req: any, res) => {
   try {
     const { content, imageUrl } = req.body;
     if (!content) return res.status(400).json({ message: "Content is required" });

@@ -49,6 +49,9 @@ const giftcards_1 = __importDefault(require("./routes/giftcards"));
 const balance_1 = __importStar(require("./routes/balance"));
 const vendor_1 = __importDefault(require("./routes/vendor"));
 const colleges_1 = __importDefault(require("./routes/colleges"));
+const stores_1 = __importDefault(require("./routes/stores"));
+const posts_1 = __importDefault(require("./routes/posts"));
+const tasks_1 = __importDefault(require("./routes/tasks"));
 const seed_1 = __importDefault(require("./seed"));
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4000;
@@ -63,12 +66,15 @@ app.use("/api/redemptions", redemptions_1.default);
 app.use("/api/balance", balance_1.default);
 app.use("/api/vendor", vendor_1.default);
 app.use("/api/colleges", colleges_1.default);
+app.use("/api/stores", stores_1.default);
+app.use("/api/posts", posts_1.default);
+app.use("/api/tasks", tasks_1.default);
 app.use("/api/admin", admin_1.default);
 app.get("/api/status", (req, res) => res.json({ status: "ok", time: new Date() }));
 mongoose_1.default
     .connect(mongoUrl)
     .then(async () => {
-    console.log("Connected to MongoDB", mongoUrl);
+    // console.log("Connected to MongoDB", mongoUrl);
     await (0, seed_1.default)();
     app.listen(port, () => {
         console.log(`Perks backend running at http://localhost:${port}`);

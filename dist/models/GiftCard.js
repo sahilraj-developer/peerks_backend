@@ -8,6 +8,7 @@ const giftCardSchema = new mongoose_1.Schema({
     amount: { type: Number, required: true },
     isActive: { type: Boolean, required: true, default: true },
     vendorId: { type: mongoose_1.Schema.Types.ObjectId, ref: "User" },
+    storeId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Store" },
     createdAt: { type: Date, default: Date.now },
 });
 const GiftCard = (0, mongoose_1.model)("GiftCard", giftCardSchema);

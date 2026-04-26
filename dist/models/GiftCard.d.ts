@@ -6,6 +6,7 @@ export interface IGiftCard extends Document {
     amount: number;
     isActive: boolean;
     vendorId?: Schema.Types.ObjectId;
+    storeId?: Schema.Types.ObjectId;
     createdAt: Date;
 }
 declare const GiftCard: import("mongoose").Model<IGiftCard, {}, {}, {}, Document<unknown, {}, IGiftCard> & IGiftCard & {

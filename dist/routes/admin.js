@@ -11,6 +11,9 @@ const UserActivity_1 = __importDefault(require("../models/UserActivity"));
 const Activity_1 = __importDefault(require("../models/Activity"));
 const GiftCard_1 = __importDefault(require("../models/GiftCard"));
 const BalanceTopup_1 = __importDefault(require("../models/BalanceTopup"));
+const Store_1 = __importDefault(require("../models/Store"));
+const Post_1 = __importDefault(require("../models/Post"));
+const Task_1 = __importDefault(require("../models/Task"));
 const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
 router.get("/analytics", auth_1.authenticate, auth_1.ensureAdmin, async (req, res) => {
@@ -367,6 +370,110 @@ router.delete("/giftcards/:id", auth_1.authenticate, auth_1.ensureAdmin, async (
     }
     catch (error) {
         res.status(500).json({ error: "Failed to delete gift card" });
+    }
+});
+router.post("/stores", auth_1.authenticate, auth_1.ensureAdmin, async (req, res) => {
+    try {
+        const store = await Store_1.default.create(req.body);
+        res.json(store);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to create store" });
+    }
+});
+router.put("/stores/:id", auth_1.authenticate, auth_1.ensureAdmin, async (req, res) => {
+    try {
+        const store = await Store_1.default.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(store);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to update store" });
+    }
+});
+router.delete("/stores/:id", auth_1.authenticate, auth_1.ensureAdmin, async (req, res) => {
+    try {
+        await Store_1.default.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to delete store" });
+    }
+});
+router.get("/posts", auth_1.authenticate, auth_1.ensureAdmin, async (req, res) => {
+    try {
+        const posts = await Post_1.default.find().populate("authorId", "name email").sort({ createdAt: -1 });
+        res.json(posts);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to get posts" });
+    }
+});
+router.put("/posts/:id/status", auth_1.authenticate, auth_1.ensureAdmin, async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!["approved", "rejected", "pending"].includes(status)) {
+            return res.status(400).json({ error: "Invalid status" });
+        }
+        const post = await Post_1.default.findByIdAndUpdate(req.params.id, { status }, { new: true });
+        res.json(post);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to update post status" });
+    }
+});
+router.get("/tasks", auth_1.authenticate, auth_1.ensureAdmin, async (req, res) => {
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 20));
+    const q = String(req.query.q || "").trim();
+    const status = String(req.query.status || "all");
+    const sort = String(req.query.sort || "createdAt");
+    const dir = String(req.query.dir || "desc") === "asc" ? 1 : -1;
+    const query = {};
+    if (q) {
+        query.$or = [
+            { title: { $regex: q, $options: "i" } },
+            { description: { $regex: q, $options: "i" } },
+            { type: { $regex: q, $options: "i" } },
+        ];
+    }
+    if (status === "active")
+        query.isActive = true;
+    if (status === "inactive")
+        query.isActive = false;
+    const sortMap = { title: "title", type: "type", rewardCoins: "rewardCoins", isActive: "isActive", createdAt: "createdAt" };
+    const sortField = sortMap[sort] || "createdAt";
+    const total = await Task_1.default.countDocuments(query);
+    const items = await Task_1.default.find(query)
+        .sort({ [sortField]: dir })
+        .skip((page - 1) * limit)
+        .limit(limit);
+    res.json({ items, total, page, limit });
+});
+router.post("/tasks", auth_1.authenticate, auth_1.ensureAdmin, async (req, res) => {
+    try {
+        const task = await Task_1.default.create(req.body);
+        res.json(task);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to create task" });
+    }
+});
+router.put("/tasks/:id", auth_1.authenticate, auth_1.ensureAdmin, async (req, res) => {
+    try {
+        const task = await Task_1.default.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(task);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to update task" });
+    }
+});
+router.delete("/tasks/:id", auth_1.authenticate, auth_1.ensureAdmin, async (req, res) => {
+    try {
+        await Task_1.default.findByIdAndDelete(req.params.id);
+        res.json({ success: true });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to delete task" });
     }
 });
 exports.default = router;
