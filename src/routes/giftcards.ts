@@ -1,12 +1,9 @@
 import { Router } from "express";
-import GiftCard from "../models/GiftCard";
 import { authenticate } from "../middleware/auth";
+import * as GiftCardController from "../controllers/GiftCardController";
 
 const router = Router();
 
-router.get("/", authenticate, async (_req, res) => {
-  const giftCards = await GiftCard.find({ isActive: true }).sort({ pointsCost: 1 });
-  res.json(giftCards);
-});
+router.get("/", authenticate, GiftCardController.getGiftCards);
 
 export default router;

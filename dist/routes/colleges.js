@@ -1,32 +1,41 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const indian_colleges_1 = require("indian-colleges");
+const CollegeController = __importStar(require("../controllers/CollegeController"));
 const router = (0, express_1.Router)();
-router.get("/", async (req, res) => {
-    const search = String(req.query.search || "").trim().toLowerCase();
-    const state = String(req.query.state || "").trim();
-    const district = String(req.query.district || "").trim();
-    let results = [];
-    if (state && district) {
-        results = (0, indian_colleges_1.getCollegesByStateAndDistrict)(state, district);
-    }
-    else if (state) {
-        results = (0, indian_colleges_1.getCollegesByState)(state);
-    }
-    else if (district) {
-        results = (0, indian_colleges_1.getCollegesByDistrict)(district);
-    }
-    else {
-        results = (0, indian_colleges_1.getAllCollegesAndUniversities)();
-    }
-    if (search) {
-        results = results.filter((item) => {
-            const name = typeof item === "string" ? item : item.college;
-            return String(name || "").toLowerCase().includes(search);
-        });
-    }
-    res.json({ count: results.length, items: results });
-});
+router.get("/", CollegeController.getColleges);
 exports.default = router;
 //# sourceMappingURL=colleges.js.map

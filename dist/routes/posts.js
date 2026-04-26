@@ -1,40 +1,46 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const Post_1 = __importDefault(require("../models/Post"));
 const auth_1 = require("../middleware/auth");
+const PostController = __importStar(require("../controllers/PostController"));
 const router = express_1.default.Router();
-// Get approved posts (feed)
-router.get("/", async (req, res) => {
-    try {
-        const posts = await Post_1.default.find({ status: "approved" }).populate("authorId", "name email").sort({ createdAt: -1 });
-        res.json(posts);
-    }
-    catch (error) {
-        res.status(500).json({ message: "Server error", error });
-    }
-});
-// Submit a new post (requires auth)
-router.post("/", auth_1.authenticate, async (req, res) => {
-    try {
-        const { content, imageUrl } = req.body;
-        if (!content)
-            return res.status(400).json({ message: "Content is required" });
-        const post = new Post_1.default({
-            content,
-            imageUrl,
-            authorId: req.user?._id,
-            status: "pending",
-        });
-        await post.save();
-        res.status(201).json(post);
-    }
-    catch (error) {
-        res.status(500).json({ message: "Server error", error });
-    }
-});
+router.get("/", PostController.getApprovedPosts);
+router.post("/", auth_1.authenticate, PostController.createPost);
 exports.default = router;
 //# sourceMappingURL=posts.js.map

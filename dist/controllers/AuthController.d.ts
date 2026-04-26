@@ -1,0 +1,7 @@
+import { Request, Response } from "express";
+export declare const register: (req: Request, res: Response) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const guestLogin: (req: Request, res: Response) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const googleLogin: (req: Request, res: Response) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const login: (req: Request, res: Response) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const getMe: (req: Request, res: Response) => Promise<Response<any, Record<string, any>> | undefined>;
+//# sourceMappingURL=AuthController.d.ts.map

@@ -55,7 +55,7 @@ const tasks_1 = __importDefault(require("./routes/tasks"));
 const seed_1 = __importDefault(require("./seed"));
 const app = (0, express_1.default)();
 const port = process.env.PORT || 4000;
-const mongoUrl = process.env.MONGODB_URI || "mongodb://localhost:27017/peerks";
+const mongoUrl = process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://localhost:27017/peerks";
 app.use((0, cors_1.default)());
 app.post("/api/balance/stripe/webhook", express_1.default.raw({ type: "application/json" }), balance_1.handleStripeWebhook);
 app.use(express_1.default.json());
