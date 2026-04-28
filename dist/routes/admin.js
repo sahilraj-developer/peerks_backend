@@ -76,6 +76,8 @@ router.delete("/stores/:id", auth_1.authenticate, auth_1.ensureAdmin, AdminStore
 // Posts
 router.get("/posts", auth_1.authenticate, auth_1.ensureAdmin, AdminPostController.getPosts);
 router.put("/posts/:id/status", auth_1.authenticate, auth_1.ensureAdmin, AdminPostController.updatePostStatus);
+router.put("/posts/:id", auth_1.authenticate, auth_1.ensureAdmin, AdminPostController.updatePost);
+router.delete("/posts/:id", auth_1.authenticate, auth_1.ensureAdmin, AdminPostController.deletePost);
 // Tasks
 router.get("/tasks", auth_1.authenticate, auth_1.ensureAdmin, AdminTaskController.getAllTasks);
 router.post("/tasks", auth_1.authenticate, auth_1.ensureAdmin, AdminTaskController.createTask);

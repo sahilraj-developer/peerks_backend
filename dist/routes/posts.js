@@ -42,5 +42,7 @@ const PostController = __importStar(require("../controllers/PostController"));
 const router = express_1.default.Router();
 router.get("/", PostController.getApprovedPosts);
 router.post("/", auth_1.authenticate, PostController.createPost);
+router.put("/:id", auth_1.authenticate, PostController.updatePost);
+router.delete("/:id", auth_1.authenticate, PostController.deletePost);
 exports.default = router;
 //# sourceMappingURL=posts.js.map

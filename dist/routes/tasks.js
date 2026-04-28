@@ -41,5 +41,9 @@ const TaskController = __importStar(require("../controllers/TaskController"));
 const router = express_1.default.Router();
 // Get active tasks
 router.get("/", TaskController.getActiveTasks);
+// Create, Update, Delete tasks
+router.post("/", TaskController.createTask);
+router.put("/:id", TaskController.updateTask);
+router.delete("/:id", TaskController.deleteTask);
 exports.default = router;
 //# sourceMappingURL=tasks.js.map

@@ -3,6 +3,11 @@ import * as TaskController from "../controllers/TaskController";
 
 const router = express.Router();
 
+router.use((req, res, next) => {
+  console.log(`[Tasks API] ${req.method} ${req.url}`);
+  next();
+});
+
 // Get active tasks
 router.get("/", TaskController.getActiveTasks);
 
